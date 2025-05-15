@@ -144,4 +144,4 @@ except ValueError:
 
 ## Licencia
 
-Este proyecto está bajo la Licencia [Especificar Licencia].
+Este proyecto está bajo la Licencia "Apache License 2.0".
