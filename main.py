@@ -43,6 +43,46 @@ def print_hi(name):
     print(df.isnull().sum())
     print(f"Porcentaje de valores nulos en CustomerID: {df['CustomerID'].isnull().mean() * 100:.2f}%")
 
+    # 2. Limpieza de datos
+    # -------------------
+    print("\n\n2. LIMPIEZA DE DATOS")
+    print("-" * 50)
+
+    # Hacemos una copia para no modificar los datos originales
+    df_clean = df.copy()
+
+    # Eliminamos filas con valores nulos en Description
+    df_clean = df_clean.dropna(subset=['Description'])
+
+    # Filtrar valores negativos en Quantity (posibles devoluciones)
+    print(f"Registros con cantidad negativa (posibles devoluciones): {(df_clean['Quantity'] < 0).sum()}")
+
+    # Filtramos facturas de cancelación (comienzan con C)
+    print(f"Facturas de cancelación: {df_clean['InvoiceNo'].astype(str).str.startswith('C').sum()}")
+
+    # Creamos un dataframe de trabajo para análisis (eliminar cancelaciones y cantidades negativas)
+    df_analysis = df_clean[(~df_clean['InvoiceNo'].astype(str).str.startswith('C')) &
+                           (df_clean['Quantity'] > 0) &
+                           (df_clean['UnitPrice'] > 0)]
+
+    print(f"Dimensiones después de la limpieza: {df_analysis.shape[0]} filas y {df_analysis.shape[1]} columnas")
+
+    # Convertimos la fecha a datetime si no lo está
+    if not pd.api.types.is_datetime64_any_dtype(df_analysis['InvoiceDate']):
+        df_analysis['InvoiceDate'] = pd.to_datetime(df_analysis['InvoiceDate'])
+
+    # Extraemos componentes de la fecha
+    df_analysis['Year'] = df_analysis['InvoiceDate'].dt.year
+    df_analysis['Month'] = df_analysis['InvoiceDate'].dt.month
+    df_analysis['Day'] = df_analysis['InvoiceDate'].dt.day
+    df_analysis['DayOfWeek'] = df_analysis['InvoiceDate'].dt.dayofweek
+    df_analysis['Hour'] = df_analysis['InvoiceDate'].dt.hour
+
+    # Calculamos el valor total de cada transacción
+    df_analysis['TotalAmount'] = df_analysis['Quantity'] * df_analysis['UnitPrice']
+
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
