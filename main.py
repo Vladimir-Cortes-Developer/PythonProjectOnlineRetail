@@ -554,10 +554,20 @@ def print_hi(name):
 
     # Creamos segmentos basados en RFM
     # Dividimos cada métrica RFM en 5 segmentos
-    rfm['R_Segment'] = pd.qcut(rfm['Recency'], 5, labels=[5, 4, 3, 2, 1])  # 5 es lo mejor (compra reciente)
-    rfm['F_Segment'] = pd.qcut(rfm['Frequency'].clip(1, 200), 5,
-                               labels=[1, 2, 3, 4, 5])  # 5 es lo mejor (alta frecuencia)
-    rfm['M_Segment'] = pd.qcut(rfm['Monetary'].clip(0, 50000), 5, labels=[1, 2, 3, 4, 5])  # 5 es lo mejor (alto valor)
+    rfm['R_Segment'] = pd.qcut(rfm['Recency'], 5, labels=[5, 4, 3, 2, 1],
+                               duplicates='drop')  # 5 es lo mejor (compra reciente)
+
+    # Para frequency, manejamos los duplicados con 'drop' o usamos rangos manuales si es necesario
+    try:
+        rfm['F_Segment'] = pd.qcut(rfm['Frequency'].clip(1, 200), 5, labels=[1, 2, 3, 4, 5], duplicates='drop')
+    except ValueError:
+        # Alternativa: crear bins manualmente basados en los percentiles
+        freq_bins = [0, 1, 2, 4, 10, float('inf')]
+        rfm['F_Segment'] = pd.cut(rfm['Frequency'].clip(1, 200), bins=freq_bins, labels=[1, 2, 3, 4, 5], right=True,
+                                  include_lowest=True)
+
+    rfm['M_Segment'] = pd.qcut(rfm['Monetary'].clip(0, 50000), 5, labels=[1, 2, 3, 4, 5],
+                               duplicates='drop')  # 5 es lo mejor (alto valor)
 
     # Calculamos RFM Score
     rfm['RFM_Score'] = rfm['R_Segment'].astype(int) + rfm['F_Segment'].astype(int) + rfm['M_Segment'].astype(int)
@@ -589,30 +599,6 @@ def print_hi(name):
     plt.ylabel('')  # Quitamos la etiqueta del eje y
     plt.tight_layout()
     plt.savefig('./imagenes/segmentacion_clientes.png')
-
-    # Descomposición en tendencia y estacionalidad usando media móvil
-    rolling_mean = daily_sales.rolling(window=7).mean()
-    rolling_std = daily_sales.rolling(window=7).std()
-
-    plt.figure(figsize=(16, 10))
-    plt.subplot(2, 1, 1)
-    plt.plot(daily_sales, label='Original')
-    plt.plot(rolling_mean, label='Media Móvil (7 días)')
-    plt.legend()
-    plt.title('Tendencia de Ventas Diarias (Media Móvil de 7 días)')
-    plt.xlabel('Fecha')
-    plt.ylabel('Ventas Totales')
-    plt.grid(True)
-
-    plt.subplot(2, 1, 2)
-    plt.plot(rolling_std, label='Desviación Estándar Móvil (7 días)')
-    plt.legend()
-    plt.title('Volatilidad de Ventas Diarias (Desviación Estándar Móvil de 7 días)')
-    plt.xlabel('Fecha')
-    plt.ylabel('Desviación Estándar')
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig('tendencia_volatilidad_ventas.png')
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
