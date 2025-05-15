@@ -327,6 +327,51 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/ventas_por_hora.png')
 
+    # 4. Análisis Bivariado
+    # ---------------------
+    print("\n\n4. ANÁLISIS BIVARIADO")
+    print("-" * 50)
+
+    # 4.1 Relación entre País y Ventas
+    country_sales = df_analysis.groupby('Country')['TotalAmount'].sum().sort_values(ascending=False)
+    print("\n4.1 Top 10 países por ventas totales:")
+    print(country_sales.head(10))
+
+    plt.figure(figsize=(14, 8))
+    country_sales.head(10).plot(kind='bar')
+    plt.title('Top 10 Países por Ventas Totales')
+    plt.xlabel('País')
+    plt.ylabel('Ventas Totales')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.savefig('./imagenes/top_10_paises_ventas.png')
+
+    # 4.2 Relación entre Mes y Cantidad vendida
+    monthly_quantity = df_analysis.groupby('Month')['Quantity'].sum().reindex(range(1, 13))
+    print("\n4.2 Cantidad total vendida por mes:")
+    print(monthly_quantity)
+
+    plt.figure(figsize=(12, 6))
+    monthly_quantity.plot(kind='line', marker='o')
+    plt.title('Cantidad Total Vendida por Mes')
+    plt.xlabel('Mes')
+    plt.ylabel('Cantidad Total')
+    plt.xticks(range(1, 13), ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'])
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('./imagenes/cantidad_por_mes.png')
+
+    # 4.3 Heatmap de correlación
+    print("\n4.3 Matriz de correlación entre variables numéricas:")
+    numeric_cols = ['Quantity', 'UnitPrice', 'TotalAmount', 'Year', 'Month', 'Day', 'DayOfWeek', 'Hour']
+    correlation = df_analysis[numeric_cols].corr()
+    print(correlation)
+
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt='.2f')
+    plt.title('Matriz de Correlación')
+    plt.tight_layout()
+    plt.savefig('./imagenes/matriz_correlacion.png')
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
