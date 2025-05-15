@@ -600,6 +600,53 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/segmentacion_clientes.png')
 
+    # 10. Conclusiones
+    # ---------------
+    print("\n\n10. CONCLUSIONES DEL ANÁLISIS EXPLORATORIO")
+    print("-" * 50)
+
+    print("""
+    Conclusiones principales del análisis exploratorio de datos:
+
+    1. Perfil de Datos:
+       - El dataset contiene información de transacciones minoristas en línea con 8 variables principales.
+       - Hay un porcentaje significativo de valores faltantes en CustomerID ({}%).
+       - Se identificaron transacciones de cancelación y valores negativos que fueron tratados en la limpieza.
+
+    2. Perfil de Ventas:
+       - Reino Unido es el país dominante en términos de transacciones y ventas totales.
+       - Existe una clara estacionalidad con picos de ventas en ciertos meses (particularmente hacia fin de año).
+       - Los días de semana muestran mayor actividad de ventas que los fines de semana.
+       - Las horas con mayor actividad de ventas son durante la mañana y media tarde.
+
+    3. Perfil de Clientes:
+       - La distribución de compras por cliente es altamente sesgada, con pocos clientes generando la mayoría de ingresos.
+       - La segmentación RFM permitió identificar distintos grupos de clientes según su comportamiento de compra.
+       - Aproximadamente {}% de los clientes son de alta valor (Champions y Loyal Customers).
+
+    4. Perfil de Productos:
+       - Existe un grupo pequeño de productos que generan la mayor parte de los ingresos.
+       - Los productos más vendidos por cantidad no siempre coinciden con los más rentables.
+
+    5. Patrones de Compra:
+       - El tamaño promedio de orden es de aproximadamente {} items.
+       - El valor promedio de orden es de aproximadamente £{:.2f}.
+       - Hay una tendencia general {} en las ventas a lo largo del período analizado.
+
+    6. Recomendaciones:
+       - Mejorar la captura de datos de CustomerID para reducir valores faltantes.
+       - Implementar estrategias de marketing específicas para los distintos segmentos de clientes.
+       - Optimizar inventario priorizando productos de alta rotación y rentabilidad.
+       - Considerar promociones especiales en períodos de menor actividad para equilibrar ventas.
+    """.format(
+        df['CustomerID'].isnull().mean() * 100,
+        len(rfm[rfm['RFM_Score'] >= 10]) / len(rfm) * 100,
+        order_size.mean(),
+        order_value.mean(),
+        "creciente" if (daily_sales.iloc[-20:].mean() > daily_sales.iloc[:20].mean()) else "decreciente"
+    ))
+
+    print("\nAnálisis Exploratorio de Datos completado!")
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
