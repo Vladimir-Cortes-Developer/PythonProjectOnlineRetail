@@ -547,7 +547,48 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/serie_temporal_ventas.png')
 
+    # 9. Segmentación de Clientes
+    # --------------------------
+    print("\n\n9. SEGMENTACIÓN DE CLIENTES")
+    print("-" * 50)
 
+    # Creamos segmentos basados en RFM
+    # Dividimos cada métrica RFM en 5 segmentos
+    rfm['R_Segment'] = pd.qcut(rfm['Recency'], 5, labels=[5, 4, 3, 2, 1])  # 5 es lo mejor (compra reciente)
+    rfm['F_Segment'] = pd.qcut(rfm['Frequency'].clip(1, 200), 5,
+                               labels=[1, 2, 3, 4, 5])  # 5 es lo mejor (alta frecuencia)
+    rfm['M_Segment'] = pd.qcut(rfm['Monetary'].clip(0, 50000), 5, labels=[1, 2, 3, 4, 5])  # 5 es lo mejor (alto valor)
+
+    # Calculamos RFM Score
+    rfm['RFM_Score'] = rfm['R_Segment'].astype(int) + rfm['F_Segment'].astype(int) + rfm['M_Segment'].astype(int)
+
+    # Creamos categorías de clientes
+    def categorize_customer(rfm_score):
+        if rfm_score >= 13:
+            return 'Champions'
+        elif 10 <= rfm_score < 13:
+            return 'Loyal Customers'
+        elif 7 <= rfm_score < 10:
+            return 'Potential Loyalists'
+        elif 5 <= rfm_score < 7:
+            return 'At Risk Customers'
+        else:
+            return 'Need Attention'
+
+    rfm['Customer_Category'] = rfm['RFM_Score'].apply(categorize_customer)
+
+    # Contamos clientes por categoría
+    customer_categories = rfm['Customer_Category'].value_counts()
+    print("\n9.1 Segmentación de clientes por categoría RFM:")
+    print(customer_categories)
+
+    # Visualizamos la segmentación
+    plt.figure(figsize=(12, 8))
+    customer_categories.plot(kind='pie', autopct='%1.1f%%')
+    plt.title('Distribución de Segmentos de Clientes')
+    plt.ylabel('')  # Quitamos la etiqueta del eje y
+    plt.tight_layout()
+    plt.savefig('./imagenes/segmentacion_clientes.png')
 
     # Descomposición en tendencia y estacionalidad usando media móvil
     rolling_mean = daily_sales.rolling(window=7).mean()
