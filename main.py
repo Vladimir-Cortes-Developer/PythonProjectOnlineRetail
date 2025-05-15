@@ -459,6 +459,33 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/analisis_rfm.png')
 
+    # 6. Análisis de Productos
+    # ------------------------
+    print("\n\n6. ANÁLISIS DE PRODUCTOS")
+    print("-" * 50)
+
+    # 6.1 Productos más vendidos por cantidad
+    top_products_quantity = df_analysis.groupby(['StockCode', 'Description'])['Quantity'].sum().sort_values(
+        ascending=False)
+    print("\n6.1 Top 10 productos más vendidos por cantidad:")
+    print(top_products_quantity.head(10))
+
+    # 6.2 Productos más vendidos por ingresos totales
+    top_products_revenue = df_analysis.groupby(['StockCode', 'Description'])['TotalAmount'].sum().sort_values(
+        ascending=False)
+    print("\n6.2 Top 10 productos más vendidos por ingresos:")
+    print(top_products_revenue.head(10))
+
+    # Visualizar top productos por ingresos
+    plt.figure(figsize=(14, 8))
+    top_products_revenue.head(10).plot(kind='bar')
+    plt.title('Top 10 Productos por Ingresos Totales')
+    plt.xlabel('(StockCode, Descripción)')
+    plt.ylabel('Ingresos Totales')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.savefig('./imagenes/top_10_productos_ingresos.png')
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')

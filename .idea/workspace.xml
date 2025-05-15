@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4dfe5eb-1599-47ad-98be-037332ca0b8f" name="Changes" comment="feat(EDA): add Univariate Analysis">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e4dfe5eb-1599-47ad-98be-037332ca0b8f" name="Changes" comment="feat(EDA): add customers analysis">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747323051948</updated>
       <workItem from="1747323052894" duration="832000" />
-      <workItem from="1747331552191" duration="2682000" />
+      <workItem from="1747331552191" duration="2993000" />
     </task>
     <task id="LOCAL-00001" summary="feat(EDA): Data upload">
       <option name="closed" value="true" />
@@ -108,7 +107,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747334412337</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="feat(EDA): add Bivariate Analysis">
+      <option name="closed" value="true" />
+      <created>1747335621738</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747335621738</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat(EDA): add customers analysis">
+      <option name="closed" value="true" />
+      <created>1747335901969</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747335901969</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -118,9 +133,11 @@
     <MESSAGE value="feat(EDA): Data upload" />
     <MESSAGE value="feat(EDA): Data Cleaning" />
     <MESSAGE value="feat(EDA): add Univariate Analysis" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(EDA): add Univariate Analysis" />
+    <MESSAGE value="feat(EDA): add Bivariate Analysis" />
+    <MESSAGE value="feat(EDA): add customers analysis" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(EDA): add customers analysis" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/PythonProjectOnlineRetail$main.coverage" NAME="main Coverage Results" MODIFIED="1747334515673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PythonProjectOnlineRetail$main.coverage" NAME="main Coverage Results" MODIFIED="1747335763950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
