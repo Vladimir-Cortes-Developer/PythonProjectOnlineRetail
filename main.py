@@ -373,6 +373,92 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/matriz_correlacion.png')
 
+    # 5. Análisis de Clientes
+    # -----------------------
+    print("\n\n5. ANÁLISIS DE CLIENTES")
+    print("-" * 50)
+
+    # Solo analizamos clientes con CustomerID válido
+    df_customers = df_analysis.dropna(subset=['CustomerID'])
+    df_customers['CustomerID'] = df_customers['CustomerID'].astype(int)
+
+    # 5.1 Número de transacciones por cliente
+    customer_transactions = df_customers.groupby('CustomerID')['InvoiceNo'].nunique()
+    print("\n5.1 Estadísticas de transacciones por cliente:")
+    print(customer_transactions.describe())
+
+    plt.figure(figsize=(14, 6))
+    plt.subplot(1, 2, 1)
+    sns.histplot(customer_transactions.clip(0, 50), bins=50, kde=True)
+    plt.title('Distribución de Transacciones por Cliente')
+    plt.xlabel('Número de Transacciones')
+
+    plt.subplot(1, 2, 2)
+    sns.boxplot(y=customer_transactions.clip(0, 50))
+    plt.title('Boxplot de Transacciones por Cliente')
+    plt.tight_layout()
+    plt.savefig('./imagenes/transacciones_por_cliente.png')
+
+    # 5.2 Total gastado por cliente
+    customer_spending = df_customers.groupby('CustomerID')['TotalAmount'].sum()
+    print("\n5.2 Estadísticas de gasto total por cliente:")
+    print(customer_spending.describe())
+
+    plt.figure(figsize=(14, 6))
+    plt.subplot(1, 2, 1)
+    sns.histplot(customer_spending.clip(0, 10000), bins=50, kde=True)
+    plt.title('Distribución de Gasto Total por Cliente')
+    plt.xlabel('Gasto Total')
+
+    plt.subplot(1, 2, 2)
+    sns.boxplot(y=customer_spending.clip(0, 10000))
+    plt.title('Boxplot de Gasto Total por Cliente')
+    plt.tight_layout()
+    plt.savefig('./imagenes/gasto_por_cliente.png')
+
+    # 5.3 RFM (Recency, Frequency, Monetary) Analysis
+    # Determinamos la fecha más reciente en el dataset
+    max_date = df_customers['InvoiceDate'].max()
+
+    # Para cada cliente calculamos:
+    # - Recency: días desde la última compra
+    # - Frequency: número de transacciones
+    # - Monetary: gasto total
+
+    rfm = df_customers.groupby('CustomerID').agg({
+        'InvoiceDate': lambda x: (max_date - x.max()).days,  # Recency
+        'InvoiceNo': 'nunique',  # Frequency
+        'TotalAmount': 'sum'  # Monetary
+    }).rename(columns={
+        'InvoiceDate': 'Recency',
+        'InvoiceNo': 'Frequency',
+        'TotalAmount': 'Monetary'
+    })
+
+    print("\n5.3 Análisis RFM - Primeros 10 clientes:")
+    print(rfm.head(10))
+
+    # Visualizar distribución de RFM
+    plt.figure(figsize=(18, 6))
+
+    plt.subplot(1, 3, 1)
+    sns.histplot(rfm['Recency'].clip(0, 365), bins=50, kde=True)
+    plt.title('Distribución de Recency (días)')
+    plt.xlabel('Días desde última compra')
+
+    plt.subplot(1, 3, 2)
+    sns.histplot(rfm['Frequency'].clip(0, 100), bins=50, kde=True)
+    plt.title('Distribución de Frequency')
+    plt.xlabel('Número de Transacciones')
+
+    plt.subplot(1, 3, 3)
+    sns.histplot(rfm['Monetary'].clip(0, 10000), bins=50, kde=True)
+    plt.title('Distribución de Monetary')
+    plt.xlabel('Gasto Total')
+
+    plt.tight_layout()
+    plt.savefig('./imagenes/analisis_rfm.png')
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
