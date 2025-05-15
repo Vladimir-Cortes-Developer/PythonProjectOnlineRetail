@@ -486,6 +486,93 @@ def print_hi(name):
     plt.tight_layout()
     plt.savefig('./imagenes/top_10_productos_ingresos.png')
 
+    # 7. Análisis de Patrones de Compra
+    # ---------------------------------
+    print("\n\n7. ANÁLISIS DE PATRONES DE COMPRA")
+    print("-" * 50)
+
+    # 7.1 Tamaño promedio de la orden (items por factura)
+    order_size = df_analysis.groupby('InvoiceNo')['Quantity'].sum()
+    print("\n7.1 Estadísticas de tamaño de orden (items por factura):")
+    print(order_size.describe())
+
+    plt.figure(figsize=(14, 6))
+    plt.subplot(1, 2, 1)
+    sns.histplot(order_size.clip(0, 100), bins=50, kde=True)
+    plt.title('Distribución de Tamaño de Orden')
+    plt.xlabel('Cantidad de Items')
+
+    plt.subplot(1, 2, 2)
+    sns.boxplot(y=order_size.clip(0, 100))
+    plt.title('Boxplot de Tamaño de Orden')
+    plt.tight_layout()
+    plt.savefig('./imagenes/tamaño_orden.png')
+
+    # 7.2 Valor promedio de la orden
+    order_value = df_analysis.groupby('InvoiceNo')['TotalAmount'].sum()
+    print("\n7.2 Estadísticas de valor de orden:")
+    print(order_value.describe())
+
+    plt.figure(figsize=(14, 6))
+    plt.subplot(1, 2, 1)
+    sns.histplot(order_value.clip(0, 1000), bins=50, kde=True)
+    plt.title('Distribución de Valor de Orden')
+    plt.xlabel('Valor Total')
+
+    plt.subplot(1, 2, 2)
+    sns.boxplot(y=order_value.clip(0, 1000))
+    plt.title('Boxplot de Valor de Orden')
+    plt.tight_layout()
+    plt.savefig('./imagenes/valor_orden.png')
+
+    # 8. Series temporales y análisis de tendencias
+    # --------------------------------------------
+    print("\n\n8. ANÁLISIS DE SERIES TEMPORALES")
+    print("-" * 50)
+
+    # Agrupamos por fecha completa
+    df_analysis['Date'] = df_analysis['InvoiceDate'].dt.date
+    daily_sales = df_analysis.groupby('Date')['TotalAmount'].sum()
+
+    print("\n8.1 Estadísticas de ventas diarias:")
+    print(daily_sales.describe())
+
+    # Gráfico de serie temporal
+    plt.figure(figsize=(16, 8))
+    daily_sales.plot(kind='line')
+    plt.title('Ventas Diarias a lo Largo del Tiempo')
+    plt.xlabel('Fecha')
+    plt.ylabel('Ventas Totales')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('./imagenes/serie_temporal_ventas.png')
+
+
+
+    # Descomposición en tendencia y estacionalidad usando media móvil
+    rolling_mean = daily_sales.rolling(window=7).mean()
+    rolling_std = daily_sales.rolling(window=7).std()
+
+    plt.figure(figsize=(16, 10))
+    plt.subplot(2, 1, 1)
+    plt.plot(daily_sales, label='Original')
+    plt.plot(rolling_mean, label='Media Móvil (7 días)')
+    plt.legend()
+    plt.title('Tendencia de Ventas Diarias (Media Móvil de 7 días)')
+    plt.xlabel('Fecha')
+    plt.ylabel('Ventas Totales')
+    plt.grid(True)
+
+    plt.subplot(2, 1, 2)
+    plt.plot(rolling_std, label='Desviación Estándar Móvil (7 días)')
+    plt.legend()
+    plt.title('Volatilidad de Ventas Diarias (Desviación Estándar Móvil de 7 días)')
+    plt.xlabel('Fecha')
+    plt.ylabel('Desviación Estándar')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('tendencia_volatilidad_ventas.png')
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
